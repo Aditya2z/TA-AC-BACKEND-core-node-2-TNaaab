@@ -79,7 +79,7 @@ function handleRequest(req, res) {
         res.writeHead(201, {"content-type" : "text/html"});
         fs.createReadStream("form.html").pipe(res);
     } else if (requestMethod === "POST" && pathname === "/form") {
-        res.writeHead(201, {"content-type" : "text/plain"});
+        res.writeHead(201, {"content-type" : "text/html"});
         var store = "";
         req.on("data", (chunk) => {
             store += chunk;
