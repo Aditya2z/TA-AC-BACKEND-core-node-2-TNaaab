@@ -16,6 +16,14 @@ Write code to
   - get relative path of `index.js` 
   - get absolute path of `index.js`
 
+```js
+var fs = require("fs");
+var relativeIndex = "../client/index.js";
+const path = require('path');
+
+const indexPath = path.join(__dirname, '../client/index.js');
+```
+
 #### server
 Create a basic http server which should grab data from a HTML form rendered on a specific route and display the content on a seperate page.
 
@@ -47,3 +55,39 @@ You have to basically handle 2 routes
 ##### Note:-
 - action attribute determines the route which will be requested on server side
 - method defines HTTP method used to submit the form(ideally POST)
+
+```js
+
+var http = require("http");
+var url = require("url");
+var fs = require("fs");
+var querystring = require("querystring");
+
+
+
+var server = http.createServer(handleRequest);
+
+server.listen(5678, () => {
+    console.log("Server is listening to port 5678");
+});
+
+function handleRequest(req, res) {
+    const {pathname} = url.parse(req.url);
+    requestMethod = req.method;
+
+    if(requestMethod === "GET" && pathname === "/form") {
+        res.writeHead(201, {"content-type" : "text/html"});
+        fs.createReadStream("form.html").pipe(res);
+    } else if (requestMethod === "POST" && pathname === "/form") {
+        res.writeHead(201, {"content-type" : "text/plain"});
+        var store = "";
+        req.on("data", (chunk) => {
+            store += chunk;
+        });
+        req.on("end", () => {
+            var requestData = querystring.parse(store);
+            res.end(JSON.stringify(requestData));
+        })
+    }
+}
+```
